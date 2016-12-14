@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-playbulb”,
+  "name": "homebridge-playbulb",
   "version": "1.0.0",
   "description": "A homebridge accessory for the Mipow Playbulb Candle LED candles”,
   "main": "index.js",
