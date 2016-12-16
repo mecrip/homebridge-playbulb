@@ -20,12 +20,12 @@ function PlaybulbPlatform(log, config) {
 	noble.on('stateChange', function(state) {
 		if (state === 'poweredOn') {
 			this.log("Powered on, noble will start scanning");
-    		noble.startScanning([], true);
-    		this.log("Scanning started");
+    			noble.startScanning([], true);
+    			this.log("Scanning started");
   		} else {
-    		noble.stopScanning();
+    			noble.stopScanning();
   		}
-	});
+	}.bind(this));
 };
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
