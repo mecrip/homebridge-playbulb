@@ -41,9 +41,10 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 	if(address in this.myaccessories){
 		this.lastseen[address] = Date.now();
 	}else{
+		accessoryName = "Candle"+Object.keys(this.myaccessories).length;
 		uuid = UUIDGen.generate(accessoryName);
 
-  		var acc = new Accessory("Candle"+Object.keys(this.myaccessories).length, uuid);
+  		var acc = new Accessory(accessoryName, uuid);
 		acc.log = this.log;
 		acc.name = "Candle"+Object.keys(this.myaccessories).length;
 		acc.address = address;
