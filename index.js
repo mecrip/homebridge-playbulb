@@ -39,7 +39,24 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 	if(address in this.myaccessories){
 		this.lastseen[address] = Date.now();
 	}else{
-		this.myaccessories[address] = new PlaybulbCandle(this.log, "Candle"+Object.keys(this.myaccessories).length, address, this);
+		uuid = UUIDGen.generate(accessoryName);
+
+  		var acc = new Accessory("Candle"+Object.keys(this.myaccessories).length, uuid);
+		acc.log = this.log;
+		acc.name = "Candle"+Object.keys(this.myaccessories).length;
+		acc.address = address;
+		acc.platform = this;
+		//Setup the service
+		acc.service = new acc.platform.Service.Lightbulb(acc.name);
+		acc.service.addCharacteristic(acc.platform.Characteristic.Brightness);
+  		acc.service.addCharacteristic(acc.platform.Characteristic.Hue);
+  		acc.service.addCharacteristic(acc.platform.Characteristic.Saturation);
+  	
+  		acc.infservice = new acc.platform.Service.AccessoryInformation();
+		acc.infservice.setCharacteristic(acc.platform.Characteristic.Manufacturer, "Mipow");
+		acc.infservice.setCharacteristic(acc.platform.Characteristic.Model, "Playbulb Candle");
+		acc.infservice.setCharacteristic(acc.platform.Characteristic.SerialNumber, acc.address);
+		this.myaccessories[address] = acc;//new PlaybulbCandle(this.log, "Candle"+Object.keys(this.myaccessories).length, address, this);
 		this.lastseen[address] = Date.now();
 		this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [this.myaccessories[address]]);
 		this.log("Registered " + this.myaccessories[address].name + " on address " + address);
