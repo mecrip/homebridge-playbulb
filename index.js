@@ -6,7 +6,7 @@ var Characteristic, Service, Accessory, UUIDGen;
 module.exports = function (homebridge) {
 	Service = homebridge.hap.Service;
 	Characteristic = homebridge.hap.Characteristic;
-	Accessory = homebridge.platformAccessoryl
+	Accessory = homebridge.platformAccessory;
 	UUIDGen = homebridge.hap.uuid;
 
 	homebridge.registerPlatform("homebridge-playbulb", "Playbulb", PlaybulbPlatform, true);
