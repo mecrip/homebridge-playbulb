@@ -26,13 +26,15 @@ function PlaybulbPlatform(log, config) {
     			noble.stopScanning();
   		}
 	}.bind(this));
+	
+	this._initializeAccessories();
 };
 
-PlaybulbPlatform.prototype._initializeAccessories = function(devices) {
+PlaybulbPlatform.prototype._initializeAccessories = function() {
 	this.log("Initializing playbulb accessories");
 	this.myaccessories = {};
-	var acc = new PlaybulbCandle(this.log, "AAA");
-	this.myaccessories[acc.address] = acc;
+	var acc = new PlaybulbCandle(this.log, "AAA", this);
+	this.myaccessories[acc.loc] = acc;
 };
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
