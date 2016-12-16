@@ -19,7 +19,7 @@ function PlaybulbPlatform(log, config) {
 	this.lastseen = {};
 
 	noble.on('discover', function(peripheral) {
-		this.log("Found " + peripheral.advertisement.localName + " on address " + peripheral.address);
+		this._bulbDiscovered(peripheral);
 	}.bind(this));
 	
 	noble.on('stateChange', function(state) {
