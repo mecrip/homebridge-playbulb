@@ -36,7 +36,7 @@ function PlaybulbPlatform(log, config) {
 PlaybulbPlatform.prototype._initializeAccessories = function() {
 	this.log("Initializing playbulb accessories");
 	this.myaccessories = {};
-	var acc = new PlaybulbCandle(this.log, "AAA", this);
+	var acc = new PlaybulbCandle(this.log, "AAA", "bbb", this);
 	this.myaccessories[acc.loc] = acc;
 };
 
