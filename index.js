@@ -15,6 +15,8 @@ function PlaybulbPlatform(log, config) {
 	this.config = config;
 	this.Service = Service;
 	this.Characteristic = Characteristic;
+	this.myaccessories = {};
+	this.lastseen = {};
 
 	noble.on('discover', function(peripheral) {
 		this.log("Found " + peripheral.advertisement.localName + " on address " + peripheral.address);
@@ -29,16 +31,18 @@ function PlaybulbPlatform(log, config) {
     			noble.stopScanning();
   		}
 	}.bind(this));
-	
-	this._initializeAccessories();
 };
 
-PlaybulbPlatform.prototype._initializeAccessories = function() {
-	this.log("Initializing playbulb accessories");
-	this.myaccessories = {};
-	var acc = new PlaybulbCandle(this.log, "AAA", "bbb", this);
-	this.myaccessories[acc.loc] = acc;
-};
+PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
+	var address = bulb.address;
+	if(address in this.myaccessories){
+		this.lastseen[address] = Date.now();
+	}else{
+		this.myaccessories[address] = new PlaybulbCandle(this.log, "Candle"+Object.keys(this.myaccessories).length, address, this);
+		this.lastseen[address] = Date.now();
+		this.log("Registered " + this.myaccessories[address].name + " on address " + address);
+	}
+}
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
 	this.log("Retrieving accessories for Playbulb");
