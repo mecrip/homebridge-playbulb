@@ -1,11 +1,13 @@
 var PlaybulbCandle = require('./lib/playbulbcandle.js');
 var noble = require('noble');
 
-var Characteristic, Service;
+var Characteristic, Service, Accessory, UUIDGen;
 
 module.exports = function (homebridge) {
 	Service = homebridge.hap.Service;
 	Characteristic = homebridge.hap.Characteristic;
+	Accessory = homebridge.platformAccessoryl
+	UUIDGen = homebridge.hap.uuid;
 
 	homebridge.registerPlatform("homebridge-playbulb", "Playbulb", PlaybulbPlatform, true);
 };
