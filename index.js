@@ -1,4 +1,4 @@
-//var PiperContactSensor = require('./lib/contactsensor.js');
+var PlaybulbCandle = require('./lib/playbulbcandle.js');
 var noble = require('noble');
 
 var Characteristic, Service;
@@ -28,12 +28,19 @@ function PlaybulbPlatform(log, config) {
 	}.bind(this));
 };
 
+PlaybulbPlatform.prototype._initializeAccessories = function(devices) {
+	this.log("Initializing playbulb accessories");
+	this.myaccessories = {};
+	var acc = new PlaybulbCandle(this.log, "AAA");
+	this.myaccessories[acc.address] = acc;
+};
+
 PlaybulbPlatform.prototype.accessories = function(callback) {
 	this.log("Retrieving accessories for Playbulb");
 	
 	var accessories = [];
-	//for (var id in this.myaccessories) {
-	//	accessories.push(this.myaccessories[id]);
-	//}
+	for (var id in this.myaccessories) {
+		accessories.push(this.myaccessories[id]);
+	}
 	callback(accessories);
 };
