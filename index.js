@@ -20,6 +20,7 @@ function PlaybulbPlatform(log, config, api) {
 	this.Characteristic = Characteristic;
 	this.myaccessories = {};
 	this.lastseen = {};
+	this.finished = false;
 
 	noble.on('discover', function(peripheral) {
 		this._bulbDiscovered(peripheral);
@@ -34,9 +35,15 @@ function PlaybulbPlatform(log, config, api) {
     			noble.stopScanning();
   		}
 	}.bind(this));
+	
+	this.api.on('didFinishLaunching', function() {
+        this.log("DidFinishLaunching");
+        this.finished = true;
+    }.bind(this));
 };
 
 PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
+	if(this.finished){
 	var address = bulb.address;
 	if(address in this.myaccessories){
 		this.lastseen[address] = Date.now();
@@ -59,15 +66,20 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 		acc.infservice.setCharacteristic(acc.platform.Characteristic.Manufacturer, "Mipow");
 		acc.infservice.setCharacteristic(acc.platform.Characteristic.Model, "Playbulb Candle");
 		acc.infservice.setCharacteristic(acc.platform.Characteristic.SerialNumber, acc.address);
+		acc.reachable = true;
 		this.myaccessories[address] = acc;//new PlaybulbCandle(this.log, "Candle"+Object.keys(this.myaccessories).length, address, this);
 		this.lastseen[address] = Date.now();
 		this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [this.myaccessories[address]]);
 		this.log("Registered " + this.myaccessories[address].name + " on address " + address);
 	}
+	}
 }
 
 PlaybulbPlatform.prototype.configureAccessory = function(accessory) {
+	accessory.reachable = true;
 
+  	this.myaccessories[accessory.address] = accessory;
+  	this.log("Configured address " + address);
 }
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
