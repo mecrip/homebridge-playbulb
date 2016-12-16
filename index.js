@@ -10,9 +10,10 @@ module.exports = function (homebridge) {
 	homebridge.registerPlatform("homebridge-playbulb", "Playbulb", PlaybulbPlatform, true);
 };
 
-function PlaybulbPlatform(log, config) {
+function PlaybulbPlatform(log, config, api) {
 	this.log = log;
 	this.config = config;
+	this.api = api;
 	this.Service = Service;
 	this.Characteristic = Characteristic;
 	this.myaccessories = {};
@@ -40,6 +41,7 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 	}else{
 		this.myaccessories[address] = new PlaybulbCandle(this.log, "Candle"+Object.keys(this.myaccessories).length, address, this);
 		this.lastseen[address] = Date.now();
+		this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [this.myaccessories[address]]);
 		this.log("Registered " + this.myaccessories[address].name + " on address " + address);
 	}
 }
