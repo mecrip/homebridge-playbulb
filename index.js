@@ -16,11 +16,14 @@ function PlaybulbPlatform(log, config) {
 	this.Service = Service;
 	this.Characteristic = Characteristic;
 
-	//this.makerkey = this.config.makerkey;
+	noble.on('discover', function(peripheral) {
+		this.log("Found " + peripheral.advertisement.localName + " on address " + peripheral.address);
+	}.bind(this));
+	
 	noble.on('stateChange', function(state) {
 		if (state === 'poweredOn') {
 			this.log("Powered on, noble will start scanning");
-    			noble.startScanning([], true);
+    			noble.startScanning(["ff02"], true);
     			this.log("Scanning started");
   		} else {
     			noble.stopScanning();
