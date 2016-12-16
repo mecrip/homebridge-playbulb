@@ -66,6 +66,10 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 	}
 }
 
+PlaybulbPlatform.prototype.configureAccessory = function(accessory) {
+
+}
+
 PlaybulbPlatform.prototype.accessories = function(callback) {
 	this.log("Retrieving accessories for Playbulb");
 	
