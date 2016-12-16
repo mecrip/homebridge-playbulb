@@ -17,19 +17,19 @@ function PlaybulbPlatform(log, config) {
 	this.Characteristic = Characteristic;
 
 	//this.makerkey = this.config.makerkey;
+	noble.on('stateChange', function(state) {
+		if (state === 'poweredOn') {
+			this.log("Powered on, noble will start scanning");
+    		noble.startScanning([], true);
+    		this.log("Scanning started");
+  		} else {
+    		noble.stopScanning();
+  		}
+	});
 };
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
 	this.log("Retrieving accessories for Playbulb");
-	
-	if(noble.state === "poweredOn"){
-		noble.startScanning(["ff02"]);
-		this.log("Noble started scanning...");
-	}else{
-		this.log("Noble not powered on...");
-	}
-	noble.stopScanning();
-	this.log("Noble stopped scanning");
 	
 	var accessories = [];
 	//for (var id in this.myaccessories) {
