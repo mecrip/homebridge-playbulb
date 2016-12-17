@@ -66,7 +66,7 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 			uuid = UUIDGen.generate(accessoryName);
 
   			var acc = new Accessory(accessoryName, uuid);
-  			var candle = new PlaybulbCandle(this.log, accessoryName, address, this, acc);
+  			var candle = new PlaybulbCandle(this.log, accessoryName, address, this, bulb, acc);
 
 			this.myaccessories[address] = acc;
 			this.lastseen[address] = Date.now();
