@@ -2,7 +2,8 @@ var PlaybulbCandle = require('./lib/playbulbcandle.js');
 var noble = require('noble');
 
 var Characteristic, Service, Accessory, UUIDGen;
-var REACHABILITY_TIMEOUT = 10000;
+var REACHABILITY_TIMEOUT = 5000;
+var SERVICE_TYPE = "ff02";
 
 module.exports = function (homebridge) {
 	Service = homebridge.hap.Service;
@@ -29,11 +30,12 @@ function PlaybulbPlatform(log, config, api) {
 
 	setInterval(function() {
 		for (var address in this.myaccessories) {
-			if (this.myaccessories[address].reachable && this.lastseen[address] < (Date.now() - REACHABILITY_TIMEOUT)) {
-      				var candle = this.myaccessories[address].context["candle"];
+			if (this.lastseen[address] < (Date.now() - REACHABILITY_TIMEOUT)) {
+      			var candle = this.myaccessories[address].context["candle"];
 				this.log("Candle " + candle.name + " no longer reachable");
-				this.myaccessories[address].reachable = false;
-				this.myaccessories[address].updateReachability(false);
+				this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [this.myaccessories[address]]);
+				delete this.myaccessories[address];
+				delete this.lastseen[address];
 			}	
 		}
 	}.bind(this), REACHABILITY_TIMEOUT);
@@ -41,7 +43,7 @@ function PlaybulbPlatform(log, config, api) {
 	noble.on('stateChange', function(state) {
 		if (state === 'poweredOn') {
 			this.log("Powered on, noble will start scanning");
-    			noble.startScanning(["ff02"], true);
+    			noble.startScanning([SERVICE_TYPE], true);
     			this.log("Scanning started");
   		} else {
     			noble.stopScanning();
@@ -49,9 +51,9 @@ function PlaybulbPlatform(log, config, api) {
 	}.bind(this));
 	
 	this.api.on('didFinishLaunching', function() {
-        	this.log("DidFinishLaunching");
-        	this.finished = true;
-    	}.bind(this));
+        this.log("DidFinishLaunching");
+        this.finished = true;
+    }.bind(this));
 };
 
 PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
@@ -59,13 +61,8 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 		var address = bulb.address;
 		if(address in this.myaccessories){
 			this.lastseen[address] = Date.now();
-			if(!this.myaccessories[address].reachable){
-				this.log("Candle " + this.myaccessories[address].context["candle"].name + " is reachable again");
-				this.myaccessories[address].reachable = true;
-				this.myaccessories[address].updateReachability(true);
-			}
 		}else{
-			accessoryName = "Candle"+Object.keys(this.myaccessories).length;
+			accessoryName = "Candle"+(Object.keys(this.myaccessories).length+1);
 			uuid = UUIDGen.generate(accessoryName);
 
   			var acc = new Accessory(accessoryName, uuid);
@@ -92,7 +89,6 @@ PlaybulbPlatform.prototype.configureAccessory = function(accessory) {
 
   	this.myaccessories[accessory.context["candle"].address] = accessory;
   	this.log("Configured address " + accessory.context["candle"].address);
-	//this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [accessory]);
 }
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
