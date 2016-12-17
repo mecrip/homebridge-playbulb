@@ -62,12 +62,6 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 		if(address in this.myaccessories){
 			this.lastseen[address] = Date.now();
 		}else{
-			//Try to discover the characteristic
-			bulb.discoverAllServicesAndCharacteristics(function(error, services, characteristics){
-				for(charac in characteristics){
-					this.log("- Found characteristic " + charac.uuid);
-				}
-			}.bind(this));
 			accessoryName = "Candle"+(Object.keys(this.myaccessories).length+1);
 			uuid = UUIDGen.generate(accessoryName);
 
