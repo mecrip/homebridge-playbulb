@@ -71,7 +71,7 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 			this.myaccessories[address] = acc;
 			this.lastseen[address] = Date.now();
 			this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [this.myaccessories[address]]);
-			this.log("Registered " + this.myaccessories[address]["candle"].name + " on address " + address);
+			this.log("Registered " + this.myaccessories[address].context["candle"].name + " on address " + address);
 		}
 	}
 }
@@ -88,6 +88,7 @@ PlaybulbPlatform.prototype.configureAccessory = function(accessory) {
 	accessory.reachable = false;
 
   	this.myaccessories[accessory.context["candle"].address] = accessory;
+  	this.lastseen[accessory.context["candle"].address] = Date.now();
   	this.log("Configured address " + accessory.context["candle"].address);
 }
 
