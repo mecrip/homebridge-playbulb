@@ -37,9 +37,9 @@ function PlaybulbPlatform(log, config, api) {
 	}.bind(this));
 	
 	this.api.on('didFinishLaunching', function() {
-        this.log("DidFinishLaunching");
-        this.finished = true;
-    }.bind(this));
+        	this.log("DidFinishLaunching");
+        	this.finished = true;
+    	}.bind(this));
 };
 
 PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
@@ -61,11 +61,12 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 		acc.service.addCharacteristic(acc.platform.Characteristic.Brightness);
   		acc.service.addCharacteristic(acc.platform.Characteristic.Hue);
   		acc.service.addCharacteristic(acc.platform.Characteristic.Saturation);
-  	
+  		acc.addService(acc.service);
   		acc.infservice = new acc.platform.Service.AccessoryInformation();
 		acc.infservice.setCharacteristic(acc.platform.Characteristic.Manufacturer, "Mipow");
 		acc.infservice.setCharacteristic(acc.platform.Characteristic.Model, "Playbulb Candle");
 		acc.infservice.setCharacteristic(acc.platform.Characteristic.SerialNumber, acc.address);
+		acc.addService(acc.infservice);
 		acc.reachable = true;
 		this.myaccessories[address] = acc;//new PlaybulbCandle(this.log, "Candle"+Object.keys(this.myaccessories).length, address, this);
 		this.lastseen[address] = Date.now();
@@ -76,10 +77,11 @@ PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
 }
 
 PlaybulbPlatform.prototype.configureAccessory = function(accessory) {
-	accessory.reachable = true;
+	//accessory.reachable = true;
 
-  	this.myaccessories[accessory.address] = accessory;
-  	this.log("Configured address " + address);
+  	//this.myaccessories[accessory.address] = accessory;
+  	//this.log("Configured address " + accessory.address);
+	this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [accessory]);
 }
 
 PlaybulbPlatform.prototype.accessories = function(callback) {
