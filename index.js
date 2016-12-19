@@ -43,7 +43,7 @@ PlaybulbPlatform.prototype.didFinishLaunching = function() {
 };
 
 //Bluetooth state changed
-PlaybulbPlatform.prototype.nobleStateChange = function() {
+PlaybulbPlatform.prototype.nobleStateChange = function(state) {
 	if(state != 'poweredOn') {
 		this.log.info("Stopped scanning");
 		noble.stopScanning();
