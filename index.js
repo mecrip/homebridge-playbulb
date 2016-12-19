@@ -90,7 +90,6 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	}else{
 		delete this.cachedHomebridgeAccessories[address];
 	}
-	this.log.info("CANDLE IS "+ candle);
 	candle.connect(bulb, homebridgeAcc);
 	bulb.once('disconnect', function(error) {
 		this.disconnectCandle(bulb, homebridgeAcc, error);
