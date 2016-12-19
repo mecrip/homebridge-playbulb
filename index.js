@@ -83,6 +83,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	if(!homebridgeAcc) {
 		homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(candle.name));
 		homebridgeAcc.context['address'] = address;
+		homebridgeAcc.context['bulb'] = bulb;
 		this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 	}else{
 		delete this.cachedHomebridgeAccessories[address];
