@@ -19,6 +19,10 @@ function PlaybulbPlatform(log, config, api) {
 	this.config = config;
 	this.api = api;
 	
+	this.Accessory = Accessory;
+	this.Service = Service;
+	this.Characteristic = Characteristic;
+	
 	this.candleAccessories = {};
 	this.cachedHomebridgeAccessories = {};
 	
