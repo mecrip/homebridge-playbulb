@@ -31,14 +31,11 @@ function PlaybulbPlatform(log, config, api) {
 
 PlaybulbPlatform.prototype.configureAccessory = function(homebridgeAcc) {
 	var address = homebridgeAcc.context['address'];
-	var candle = this.candleAccessories[address];
-	if(!candle) {
-		this.log.info("Removed candle " + homebridgeAcc.displayName + " on address " + address);
-		this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
-		return;
-	}	
-	this.log.info("Persisted candle " + homebridgeAcc.displayName + " on address " + address);
+	var candle = homebridgeAcc.context['candle'];
+	
+	this.candleAccessories[address] = candle;
 	this.cachedHomebridgeAccessories[address] = homebridgeAcc;
+	this.log.info("Persisted candle " + homebridgeAcc.displayName + " on address " + address);
 };
 
 //Cached accessories are all loaded now, can start scanning
@@ -103,6 +100,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 
 //Disconnect from bluetooth candle
 PlaybulbPlatform.prototype.disconnectCandle = function(bulb, homebridgeAcc, error) {
+	this.log.info("PlaybulbPlatform: disconnectCandle");
 	var address = bulb.address;
 	//TODO: Check if I should unregister here
 	this.cachedHomebridgeAccessories[address] = homebridgeAcc;
