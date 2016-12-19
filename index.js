@@ -56,13 +56,15 @@ PlaybulbPlatform.prototype.nobleStateChange = function(state) {
 //Discovered a new bluetooth candle
 PlaybulbPlatform.prototype.bulbDiscovered = function(bulb) {
 	var address = bulb.address;
-	if(address in candleAccessories){
+	if(address in this.candleAccessories){
 		this.log.info("Bulb on address " + address + " already exists");
 	}else{
 		this.log.info("Discovered bulb on address " + address + ". Will connect.");
 		var name = "Candle"+(Object.keys(this.candleAccessories).length+1);
 		var candle = new PlaybulbCandle(this.log, name, address);
+		this.log.info("CANDLE AFTER CREATION IS " + candle);
 		this.candleAccessories[address] = candle;
+		this.log.info("CANDLE IN MAP IS " + candle);
 		bulb.connect(function(error) {
 			this.connectCandle(error, bulb);
 		}.bind(this));
@@ -77,6 +79,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	}
 	var address = bulb.address;
 	var candle = this.candleAccessories[address];
+	this.log.inf("CANDLE RECOVERED IS " + candle);
 	//Check if accessory already cached
 	var homebridgeAcc = this.cachedHomebridgeAccessories[address];
 	if(!homebridgeAcc) {
@@ -86,7 +89,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	}else{
 		delete this.cachedHomebridgeAccessories[address];
 	}
-	
+	this.log.info("CANDLE IS "+ candle);
 	candle.connect(bulb, homebridgeAcc);
 	bulb.once('disconnect', function(error) {
 		this.disconnectCandle(bulb, homebridgeAcc, error);
