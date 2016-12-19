@@ -65,10 +65,8 @@ PlaybulbPlatform.prototype.bulbDiscovered = function(bulb) {
 	}else{
 		this.log.info("Discovered bulb on address " + address + ". Will connect.");
 		var name = "Candle"+(Object.keys(this.candleAccessories).length+1);
-		var candle = new PlaybulbCandle(this.log, name, address);
-		this.log.info("CANDLE AFTER CREATION IS " + candle);
+		var candle = new PlaybulbCandle(this.log, name, address, this);
 		this.candleAccessories[address] = candle;
-		this.log.info("CANDLE IN MAP IS " + candle);
 		bulb.connect(function(error) {
 			this.connectCandle(error, bulb);
 		}.bind(this));
@@ -83,7 +81,6 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	}
 	var address = bulb.address;
 	var candle = this.candleAccessories[address];
-	this.log.inf("CANDLE RECOVERED IS " + candle);
 	//Check if accessory already cached
 	var homebridgeAcc = this.cachedHomebridgeAccessories[address];
 	if(!homebridgeAcc) {
