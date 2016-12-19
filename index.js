@@ -91,7 +91,8 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 //Disconnect from bluetooth candle
 PlaybulbPlatform.prototype.disconnectCandle = function(bulb, homebridgeAcc, error) {
 	this.log.info("PlaybulbPlatform: disconnectCandle");
-	//var address = bulb.address;
+	var address = bulb.address;
+	delete this.candleAccessories[address];
 	//TODO: Check if I should unregister here
 	//this.cachedHomebridgeAccessories[address] = homebridgeAcc;
         this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
