@@ -30,12 +30,13 @@ function PlaybulbPlatform(log, config, api) {
 };
 
 PlaybulbPlatform.prototype.configureAccessory = function(homebridgeAcc) {
-	var address = homebridgeAcc.context['address'];
+	/*var address = homebridgeAcc.context['address'];
 	var candle = homebridgeAcc.context['candle'];
 	
 	this.candleAccessories[address] = candle;
 	this.cachedHomebridgeAccessories[address] = homebridgeAcc;
-	this.log.info("Persisted candle " + homebridgeAcc.displayName + " on address " + address);
+	this.log.info("Persisted candle " + homebridgeAcc.displayName + " on address " + address);*/
+	this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 };
 
 //Cached accessories are all loaded now, can start scanning
@@ -83,7 +84,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	if(!homebridgeAcc) {
 		homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(candle.name));
 		homebridgeAcc.context['address'] = address;
-		homebridgeAcc.context['bulb'] = bulb;
+		//homebridgeAcc.context['bulb'] = bulb;
 		this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 	}else{
 		delete this.cachedHomebridgeAccessories[address];
