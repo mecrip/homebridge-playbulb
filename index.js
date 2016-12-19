@@ -2,7 +2,6 @@ var PlaybulbCandle = require('./lib/playbulbcandle.js');
 var noble = require('noble');
 
 var Characteristic, Service, Accessory, UUIDGen;
-var REACHABILITY_TIMEOUT = 5000;
 var SERVICE_TYPE = "ff02";
 
 module.exports = function (homebridge) {
@@ -24,18 +23,12 @@ function PlaybulbPlatform(log, config, api) {
 	this.Characteristic = Characteristic;
 	
 	this.candleAccessories = {};
-	this.cachedHomebridgeAccessories = {};
 	
 	this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
 };
 
 PlaybulbPlatform.prototype.configureAccessory = function(homebridgeAcc) {
-	/*var address = homebridgeAcc.context['address'];
-	var candle = homebridgeAcc.context['candle'];
-	
-	this.candleAccessories[address] = candle;
-	this.cachedHomebridgeAccessories[address] = homebridgeAcc;
-	this.log.info("Persisted candle " + homebridgeAcc.displayName + " on address " + address);*/
+	//No reconfiguration: only add them when found during startup
 	this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 };
 
@@ -46,7 +39,7 @@ PlaybulbPlatform.prototype.didFinishLaunching = function() {
 
 //Bluetooth state changed
 PlaybulbPlatform.prototype.nobleStateChange = function(state) {
-	if(state != 'poweredOn') {
+	if(state !== 'poweredOn') {
 		this.log.info("Stopped scanning");
 		noble.stopScanning();
 	}
@@ -79,33 +72,29 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	}
 	var address = bulb.address;
 	var candle = this.candleAccessories[address];
-	//Check if accessory already cached
-	var homebridgeAcc = this.cachedHomebridgeAccessories[address];
-	if(!homebridgeAcc) {
-		homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(candle.name));
-		homebridgeAcc.context['address'] = address;
-		//homebridgeAcc.context['bulb'] = bulb;
-		this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
-	}else{
-		delete this.cachedHomebridgeAccessories[address];
-	}
+
+        var homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(candle.name));
+	homebridgeAcc.context['address'] = address;
+	this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
+        
 	candle.connect(bulb, homebridgeAcc);
 	bulb.once('disconnect', function(error) {
 		this.disconnectCandle(bulb, homebridgeAcc, error);
 	}.bind(this));
 	
 	//TODO: Check meaning
-	if(Object.keys(this.cachedHomebridgeAccessories).length > 0) {
+	/*if(Object.keys(this.cachedHomebridgeAccessories).length > 0) {
 		noble.startScanning([SERVICE_TYPE], false);
-	}
+	}*/
 };
 
 //Disconnect from bluetooth candle
 PlaybulbPlatform.prototype.disconnectCandle = function(bulb, homebridgeAcc, error) {
 	this.log.info("PlaybulbPlatform: disconnectCandle");
-	var address = bulb.address;
+	//var address = bulb.address;
 	//TODO: Check if I should unregister here
-	this.cachedHomebridgeAccessories[address] = homebridgeAcc;
+	//this.cachedHomebridgeAccessories[address] = homebridgeAcc;
+        this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 	noble.startScanning([SERVICE_TYPE], false);
 };
 
