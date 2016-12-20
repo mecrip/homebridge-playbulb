@@ -81,11 +81,6 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
 	bulb.once('disconnect', function(error) {
 		this.disconnectCandle(bulb, homebridgeAcc, error);
 	}.bind(this));
-	
-	//TODO: Check meaning
-	/*if(Object.keys(this.cachedHomebridgeAccessories).length > 0) {
-		noble.startScanning([SERVICE_TYPE], false);
-	}*/
 };
 
 //Disconnect from bluetooth candle
@@ -93,54 +88,5 @@ PlaybulbPlatform.prototype.disconnectCandle = function(bulb, homebridgeAcc, erro
 	this.log.info("PlaybulbPlatform: disconnectCandle");
 	var address = bulb.address;
 	delete this.candleAccessories[address];
-	//TODO: Check if I should unregister here
-	//this.cachedHomebridgeAccessories[address] = homebridgeAcc;
         this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
-	noble.startScanning([SERVICE_TYPE], false);
 };
-
-/*PlaybulbPlatform.prototype._bulbDiscovered = function(bulb){
-	if(this.finished){
-		var address = bulb.address;
-		if(address in this.myaccessories){
-			this.lastseen[address] = Date.now();
-		}else{
-			accessoryName = "Candle"+(Object.keys(this.myaccessories).length+1);
-			uuid = UUIDGen.generate(accessoryName);
-
-  			var acc = new Accessory(accessoryName, uuid);
-  			var candle = new PlaybulbCandle(this.log, accessoryName, address, this, bulb, acc);
-
-			this.myaccessories[address] = acc;
-			this.lastseen[address] = Date.now();
-			this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [this.myaccessories[address]]);
-			this.log("Registered " + this.myaccessories[address].context["candle"].name + " on address " + address);
-		}
-	}
-}
-
-PlaybulbPlatform.prototype.updateAccessoriesReachability = function() {
-  this.log("Update playbulb reachability");
-  for (var index in this.myaccessories) {
-    var accessory = this.myaccessories[index];
-    accessory.updateReachability(accessory.reachable);
-  }
-}
-
-PlaybulbPlatform.prototype.configureAccessory = function(accessory) {
-	accessory.reachable = false;
-
-  	this.myaccessories[accessory.context["candle"].address] = accessory;
-  	this.lastseen[accessory.context["candle"].address] = Date.now();
-  	this.log("Configured address " + accessory.context["candle"].address);
-}
-
-PlaybulbPlatform.prototype.accessories = function(callback) {
-	this.log("Retrieving accessories for Playbulb");
-	
-	var accessories = [];
-	for (var id in this.myaccessories) {
-		accessories.push(this.myaccessories[id]);
-	}
-	callback(accessories);
-}; */
