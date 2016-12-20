@@ -50,7 +50,6 @@ PlaybulbPlatform.prototype.initiateScanning = function(error) {
     if(noble.state === "poweredOn"){
         this.log.info("Scanning will be (re)started");
         noble.startScanning([SERVICE_TYPE], true);
-        noble.on('scanStop', this.initiateScanning.bind(this));
         noble.on('discover', this.bulbDiscovered.bind(this));
     }
 };
@@ -88,6 +87,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
     bulb.once('disconnect', function(error) {
         this.disconnectCandle(bulb, homebridgeAcc, error);
     }.bind(this));
+    this.initiateScanning();
 };
 
 //Disconnect from bluetooth candle
