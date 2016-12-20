@@ -49,7 +49,7 @@ PlaybulbPlatform.prototype.nobleStateChange = function(state) {
 PlaybulbPlatform.prototype.initiateScanning = function(error) {
     if(noble.state === "poweredOn"){
         this.log.info("Scanning will be (re)started");
-        noble.startScanning([SERVICE_TYPE], true);
+        noble.startScanning([SERVICE_TYPE], false);
         noble.on('discover', this.bulbDiscovered.bind(this));
     }
 };
