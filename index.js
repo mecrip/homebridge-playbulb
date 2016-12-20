@@ -45,6 +45,7 @@ PlaybulbPlatform.prototype.nobleStateChange = function(state) {
 	}
 	this.log.info("Started scanning");
 	noble.startScanning([SERVICE_TYPE], true);
+        noble.on('scanStop', function(error){this.log.info("SCANNING STARTED");}.bind(this));
 	noble.on('discover', this.bulbDiscovered.bind(this));
 };
 
