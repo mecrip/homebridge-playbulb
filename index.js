@@ -2,7 +2,7 @@ var PlaybulbCandle = require('./lib/playbulbcandle.js');
 var noble = require('noble');
 
 var Characteristic, Service, Accessory, UUIDGen;
-var SERVICE_TYPE = "ff02";
+var DEFAULT_SERVICE_TYPE = "ff02";
 
 module.exports = function (homebridge) {
     Service = homebridge.hap.Service;
@@ -49,7 +49,11 @@ PlaybulbPlatform.prototype.nobleStateChange = function(state) {
 PlaybulbPlatform.prototype.initiateScanning = function(error) {
     if(noble.state === "poweredOn"){
         this.log.info("Scanning will be (re)started");
-        noble.startScanning([SERVICE_TYPE], false);
+        var type = DEFAULT_SERVICE_TYPE;
+        if(this.config.servicetype !== undefined){
+            type = this.config.servicetype;
+        }
+        noble.startScanning([type], false);
         noble.on('discover', this.bulbDiscovered.bind(this));
     }
 };
