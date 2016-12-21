@@ -3,6 +3,7 @@ var noble = require('noble');
 
 var Characteristic, Service, Accessory, UUIDGen;
 var DEFAULT_SERVICE_TYPE = "ff02";
+var DEFAULT_NAME = "Candle ";
 
 module.exports = function (homebridge) {
     Service = homebridge.hap.Service;
@@ -65,7 +66,11 @@ PlaybulbPlatform.prototype.bulbDiscovered = function(bulb) {
         this.log.info("Bulb on address " + address + " already exists");
     }else{
         this.log.info("Discovered bulb on address " + address + ". Will connect.");
-        var name = "Candle"+(Object.keys(this.candleAccessories).length+1);
+        var defName = DEFAULT_NAME;
+        if(this.config.defaultname !== undefined){
+            defName = this.config.defaultname;
+        }
+        var name = defName+(Object.keys(this.candleAccessories).length+1);
         var candle = new PlaybulbCandle(this.log, name, address, this);
         this.candleAccessories[address] = candle;
         bulb.connect(function(error) {
