@@ -36,6 +36,7 @@ PlaybulbPlatform.prototype.configureAccessory = function(homebridgeAcc) {
 //Cached accessories are all loaded now, can start scanning
 PlaybulbPlatform.prototype.didFinishLaunching = function() {
     noble.on('stateChange', this.nobleStateChange.bind(this));
+    noble.on('discover', this.bulbDiscovered.bind(this));
 };
 
 //Bluetooth state changed
@@ -55,7 +56,6 @@ PlaybulbPlatform.prototype.initiateScanning = function(error) {
             type = this.config.servicetype;
         }
         noble.startScanning([type], false);
-        noble.on('discover', this.bulbDiscovered.bind(this));
     }
 };
 
