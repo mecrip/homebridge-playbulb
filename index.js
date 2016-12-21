@@ -70,7 +70,7 @@ PlaybulbPlatform.prototype.bulbDiscovered = function(bulb) {
         if(this.config.defaultname !== undefined){
             defName = this.config.defaultname;
         }
-        var name = defName+(Object.keys(this.candleAccessories).length+1);
+        var name = defName;//+(Object.keys(this.candleAccessories).length+1);
         var candle = new PlaybulbCandle(this.log, name, address, this);
         this.candleAccessories[address] = candle;
         bulb.connect(function(error) {
@@ -88,7 +88,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
     var address = bulb.address;
     var candle = this.candleAccessories[address];
 
-    var homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(candle.name));
+    var homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(address));
     homebridgeAcc.context['address'] = address;
     this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 
