@@ -30,14 +30,16 @@ function PlaybulbPlatform(log, config, api) {
 
 PlaybulbPlatform.prototype.configureAccessory = function(homebridgeAcc) {
     //No reconfiguration: only add them when found during startup
+    //this.log.info("configureAccessory: %s", homebridgeAcc.context['address'])
     this.api.unregisterPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 };
 
 //Cached accessories are all loaded now, can start scanning
 PlaybulbPlatform.prototype.didFinishLaunching = function() {
-    noble.on('stateChange', this.nobleStateChange.bind(this));
-    noble.on('discover', this.bulbDiscovered.bind(this));
+        noble.on('stateChange', this.nobleStateChange.bind(this));
+        noble.on('discover', this.bulbDiscovered.bind(this));
 };
+
 
 //Bluetooth state changed
 PlaybulbPlatform.prototype.nobleStateChange = function(state) {
