@@ -1,0 +1,32 @@
+{
+    "bridge": {
+        "name": "testhouse bridge",
+        "username": "CC:22:3D:E3:CE:32",
+        "port": 51826,
+        "pin": "031-45-154"
+    },
+    "platforms":
+    [
+        {
+            "platform": "Playbulb",
+            "bulbs":
+            [
+                {
+                    "name":"Candela di Amelia",
+                    "address":"c2:9d:4b:16:ac:e6",
+                    "servicetype_": "ff02",
+                    "effectstemplate_": "ff<rgb>03000a00",
+                    "placeholder_": "<rgb>",
+                    "effectshandle_": "0x0017",
+                    "defaultname_": "Candela ",
+                    "color_": "000000"
+                },
+                {
+                    "name":"Candela di Amelia 2",
+                    "address":"c2:9d:4b:16:ac:e7"
+                }
+            ]
+        }
+    ]
+}
+
