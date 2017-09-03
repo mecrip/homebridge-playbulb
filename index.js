@@ -26,8 +26,8 @@ function PlaybulbPlatform(log, config, api) {
 
     this.configuredAccessories={};
 
-    for (var i=0; i<this.configuredAccessories.length;i++){
-        this.log.info("configured accessory: %s,%s", this.configuredAccessories.name,this.configuredAccessories.address );
+    for (var i=0; i<this.config.bulbs.length;i++){
+        this.log.info("configured accessory: %s,%s", this.config.bulbs.name,this.config.bulbs.address );
         this.configuredAccessories[this.config.bulbs[i].address]=this.config.bulbs[i];
     }
 
@@ -52,12 +52,15 @@ PlaybulbPlatform.prototype.configureAccessory = function(homebridgeAcc) {
 //Cached accessories are all loaded now, can start scanning
 PlaybulbPlatform.prototype.didFinishLaunching = function() {
     //setup every accessory in configured accessory
-
+    
+    
     for (var address in this.configuredAccessories) {
-        var accessory = this.configuredAccessories[address];
+        var accessory;
+        
+        accessory = this.configuredAccessories[address];
         if (accessory.homebridgeAcc!=null){
             //restored from cache
-            this.log.info("accessory %s restored from cache", address);
+            this.log.info("accessory %s restored from cache, %s", address, accessory.homebridgeAcc);
         }else{
             this.log.info("create new accessory %s", address); 
 
@@ -66,7 +69,7 @@ PlaybulbPlatform.prototype.didFinishLaunching = function() {
             this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [accessory.homebridgeAcc]);
         }
 
-        accessory.bulb=new PlaybulbCandle(this.log,accessory.name,address,this,accessory.homebridgeAcc);
+        accessory.bulb=new PlaybulbCandle(this.log,accessory.name,accessory.address,this,accessory.homebridgeAcc);
     }
 };
 

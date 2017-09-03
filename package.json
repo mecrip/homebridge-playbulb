@@ -16,6 +16,6 @@
     "homebridge": ">=0.2.0"
   },
   "dependencies": {
-    "noble": "^1.8.1"
+    "async-lock": "^1.0.0"
   }
 }
