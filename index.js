@@ -25,6 +25,11 @@ function PlaybulbPlatform(log, config, api) {
 
     this.candleAccessories = {};
 
+    //load configured accessories
+    this.configuredAccessories={};
+    for (var i=0; i< config.bulbs.length; i++)
+        this.configuredAccessories[config.bulbs[i].address]=config.bulbs[i];
+    
     this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
 };
 
@@ -67,17 +72,18 @@ PlaybulbPlatform.prototype.bulbDiscovered = function(bulb) {
     if(address in this.candleAccessories){
         this.log.info("Bulb on address " + address + " already exists");
     }else{
-        this.log.info("Discovered bulb on address " + address + ". Will connect.");
-        var defName = DEFAULT_NAME;
-        if(this.config.defaultname !== undefined){
-            defName = this.config.defaultname;
+        var a=this.configuredAccessories[address];
+        if(a==null)
+            this.log.info("Discovered bulb on address " + address + ". not configured. Will ignore");
+        else{
+            this.log.info("Discovered bulb on address " + address + ". Will connect.");
+         
+            var candle = new PlaybulbCandle(this.log, a, address, this);
+            this.candleAccessories[address] = candle;
+            bulb.connect(function(error) {
+                this.connectCandle(error, bulb);
+            }.bind(this));
         }
-        var name = defName;//+(Object.keys(this.candleAccessories).length+1);
-        var candle = new PlaybulbCandle(this.log, name, address, this);
-        this.candleAccessories[address] = candle;
-        bulb.connect(function(error) {
-            this.connectCandle(error, bulb);
-        }.bind(this));
     }
 };
 
@@ -90,7 +96,7 @@ PlaybulbPlatform.prototype.connectCandle = function(error, bulb) {
     var address = bulb.address;
     var candle = this.candleAccessories[address];
 
-    var homebridgeAcc = new Accessory(candle.name, UUIDGen.generate(address));
+    var homebridgeAcc = new Accessory(candle.config.name, UUIDGen.generate(address));
     homebridgeAcc.context['address'] = address;
     this.api.registerPlatformAccessories("homebridge-playbulb", "Playbulb", [homebridgeAcc]);
 
